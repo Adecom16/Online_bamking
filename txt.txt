@@ -1,0 +1,173 @@
+        $errors = [];
+
+        $tmpName = $fileData['tmp_name'];
+        $name = $fileData['name'];
+        $size = $fileData['size'];
+        $path = '../upload/' . $name;
+        $pathEx = pathinfo($path, PATHINFO_EXTENSION);
+
+        if (empty($postData['firstname'])) {
+            $errors['firstnameErr'] = "Your First Name is Required";
+        }
+        if (empty($postData['lastname'])) {
+          $errors['lastnameErr'] = "Your Last Name is Required";
+        }
+        if (empty($postData['email'])) {
+          $errors['emailErr'] = "Your email is Required";
+        }
+        if (empty($postData['password'])) {
+          $errors['passwordErr'] = "Your Password is Required";
+        }
+        if (empty($postData['phone'])) {
+          $errors['phoneErr'] = "Your Phone is Required";
+        }
+
+
+<form method="post" id="stripe-login">
+          <p><?php echo $shout?></p>
+          <div class="field padding-bottom--24">
+            <label for="email">Email</label>
+            <input type="email" name="email">
+    <p style="color: red;"><?php echo array_key_exists('emailErr',$errors)? $errors['emailErr']: " "?></p>
+          </div>
+          <div class="field padding-bottom--24">
+            <div class="grid--50-50">
+              <label for="password">Password</label>
+            </div>
+            <input type="password" name="password">
+    <p style="color: red;"><?php echo array_key_exists('passwordErr',$errors)? $errors['passwordErr']: " "?></p>
+          </div>
+          <div class="field field-checkbox padding-bottom--24 flex-flex align-center">
+            <label for="checkbox">
+              <input type="checkbox" name="checkbox"> Stay loged in
+            </label>
+          </div>
+          <div class="field padding-bottom--24">
+            <input type="submit" name="submit" value="Continue">
+          </div>
+          <div class="field">
+            <a class="ssolink" href="https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=1014431251553-kq98rctnjtv76ag4ulrfkem43b74poni.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ffederatedid-na1.services.adobe.com%2Ffederated%2FfromOIDC&state=AcoyqU6czRDGG43rgIIzaiacN3XsIcC2Q1W6OJHTVLMYsSHKX0FOCho4GaZRRJRCv6157INgpQEW&scope=email%20openid%20profile&response_type=code&service=lso&o2v=2&flowName=GeneralOAuthFlow">Use single sign-on (Google) instead</a>
+          </div>
+</form>
+
+
+
+  <form method="post" id="stripe-login" enctype="multipart/form-data">
+                    <p><?php echo $shout?></p>
+                    <div class="field padding-bottom--24">
+                      <label for="firstname">FirstName</label>
+                      <input type="text" name="firstname">
+                      <p style="color: red;"><?php echo array_key_exists('firstnameErr',$errors)? $errors['firstnameErr']: " "?></p>
+                    </div>
+                    <div class="field padding-bottom--24">
+                      <label for="lastname">LastName</label>
+                      <input type="text" name="lastname">
+                      <p style="color: red;"><?php echo array_key_exists('lastnameErr',$errors)? $errors['lastnameErr']: " "?></p>
+                    </div>
+                    <div class="field padding-bottom--24">
+                      <label for="email">Email</label>
+                      <input type="email" name="email">
+                      <p style="color: red;"><?php echo array_key_exists('emailErr',$errors)? $errors['emailErr']: " "?></p>
+                    </div>
+                    <div class="field padding-bottom--24">
+                      <div class="grid--50-50">
+                        <label for="password">Password</label>
+                      </div>
+                      <input type="password" name="password">
+                        <p style="color: red;"><?php echo array_key_exists('passwordErr',$errors)? $errors['passwordErr']: " "?></p>
+                    </div>
+                      <div>
+                      <label for="password">Upload your Image</label>
+                      <input type="file" name="picture">
+                      </div>
+                      <br>
+                      <br>
+                    <div class="field padding-bottom--24">
+                      <label for="phone">Phone No.</label>
+                      <input type="tel" name="phone">
+                      <p style="color: red;"><?php echo array_key_exists('phoneErr',$errors)? $errors['phoneErr']: " "?></p>
+                    </div>
+                    <div class="field field-checkbox padding-bottom--24 flex-flex align-center">
+                      <label for="checkbox">
+                        <input type="checkbox" name="checkbox">Remeber me
+                      </label>
+                    </div>
+                    <div class="field padding-bottom--24">
+                      <input type="submit" name="submit" value="Continue">
+                    </div>
+                    <div class="field">
+                      <a class="ssolink" href="https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?client_id=1014431251553-kq98rctnjtv76ag4ulrfkem43b74poni.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ffederatedid-na1.services.adobe.com%2Ffederated%2FfromOIDC&state=AcoyqU6czRDGG43rgIIzaiacN3XsIcC2Q1W6OJHTVLMYsSHKX0FOCho4GaZRRJRCv6157INgpQEW&scope=email%20openid%20profile&response_type=code&service=lso&o2v=2&flowName=GeneralOAuthFlow">Use single sign-on (Google) instead</a>
+                    </div>
+                  </form>
+
+
+
+                  if (isset($_POST['claim_reward'])) {
+    // Fetch reward details from the rewards table
+    $reward_query = "SELECT * FROM rewards WHERE user_id = '{$user_data['id']}'";
+    $reward_result = $conn->query($reward_query);
+    $reward_data = $reward_result->fetch_assoc();
+    
+    // Calculate the time difference between the current time and the last claimed date
+    $last_claimed_date = strtotime($reward_data['last_claimed']);
+    $current_time = time();
+    $time_difference = $current_time - $last_claimed_date;
+    
+    // Define the reward claiming interval (e.g., 24 hours)
+    $reward_claim_interval = 24 * 60 * 60; // 24 hours in seconds
+    
+    if ($time_difference >= $reward_claim_interval) {
+        // Insert reward transaction into transactions table
+        $reward_amount = 10; // Define the reward amount (example)
+        $insert_reward_query = "INSERT INTO transactions (user_id, amount, type, date) 
+                               VALUES ('{$user_data['id']}', '$reward_amount', 'reward', NOW())";
+        $conn->query($insert_reward_query);
+        
+        // Update last claimed date in rewards table
+        $update_reward_date_query = "UPDATE rewards SET last_claimed = NOW() WHERE user_id = '{$user_data['id']}'";
+        $conn->query($update_reward_date_query);
+        
+        // Display success message
+        $reward_message = "Congratulations! You've claimed a reward of $reward_amount.";
+    } else {
+        // Display message indicating the user must wait to claim the reward
+        $reward_message = "You've already claimed a reward recently. Please wait.";
+    }
+}
+
+    <h4>balance: N<?php echo $user_data['balance']?></h4>
+
+
+
+
+
+<img src="<?php echo $user_data['path']?>" alt="">
+
+    <h1>Welcome to Your Dashboard, <?php echo $user_data['firstname']; echo"<br>"; echo $user_data['lastname']; ?>!</h1>
+
+
+    <div class="containe">
+    <h4>balance: <span id="hiddenAmount" class="hidden">****</span></h4>
+    <i id="revealAmountIcon" class="fas fa-eye"></i>
+</div>
+
+    
+    <!-- Deposit Section -->
+    <h2>Deposit Money</h2>
+    <form method="post">
+        <input type="number" name="deposit_amount" placeholder="Amount">
+        <button type="submit" name="deposit_submit">Deposit</button>
+    </form>
+
+    <!-- Withdrawal Section -->
+    <h2>Withdraw Money</h2>
+    <form method="post">
+        <input type="number" name="withdraw_amount" placeholder="Amount">
+        <button type="submit" name="withdraw_submit">Withdraw</button>
+    </form>
+
+    <!-- Claim Reward Section -->
+    <h2>Daily Reward</h2>
+    <form method="post">
+        <button type="submit" name="claim_reward">Claim Reward</button>
+    </form>
