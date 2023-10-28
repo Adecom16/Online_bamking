@@ -64,7 +64,7 @@ if (isset($_POST['withdraw_submit'])) {
         
         $user_data['balance'] = $new_balance;
     } else {
-        echo "<script>alert('insufficient balance')</script>";
+        echo "<script>alert('Insufficient balance')</script>";
     }
 }
 ?>
